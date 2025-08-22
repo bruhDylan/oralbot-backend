@@ -46,8 +46,8 @@ app = FastAPI(title="Oral Health RAG Chatbot Backend")
 origins = [
     "http://localhost:5500",
     "http://127.0.0.1:5500",
-    "https://huggingface.co/spaces/Dylan4353847/chompbot"
-    
+    "https://huggingface.co/spaces/Dylan4353847/chompbot",
+    "https://chompbot.netlify.app"
 ]
 
 app.add_middleware(
@@ -98,12 +98,9 @@ def chat(req: ChatRequest):
         f"Source: {doc.metadata}\nContent: {doc.page_content}" for doc in retrieved_docs
     )
 
-    # Optional: print context for debugging
-
-
     # Build prompt including conversation history and retrieved context
     conversation = ""
-    for i, msg in enumerate(chat_history):
+    for msg in chat_history:
         conversation += f"{msg.content}\n"
 
     prompt = f"""
@@ -113,7 +110,6 @@ You are a friendly oral health chatbot. Your goal is to help users solve oral he
 - Use information from past conversation messages and relevant documents to guide your questions.
 - Once you have enough information, provide a clear and practical solution.
 - Always respond in a helpful, empathetic, and friendly manner.
-
 
 Conversation so far:
 {conversation}
