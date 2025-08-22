@@ -44,15 +44,17 @@ app = FastAPI(title="Oral Health RAG Chatbot Backend")
 
 # Allow your frontend origin
 origins = [
-    "http://localhost:5500",  # if testing locally
-    "https://huggingface.co/spaces/Dylan4353847/chompbot"  # replace with your deployed frontend URL
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://huggingface.co/spaces/Dylan4353847/chompbot"
+    
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # or ["*"] to allow all
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],    # allow GET, POST, OPTIONS, etc.
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -102,11 +104,16 @@ def chat(req: ChatRequest):
     # Build prompt including conversation history and retrieved context
     conversation = ""
     for i, msg in enumerate(chat_history):
-        role = "User" if isinstance(msg, HumanMessage) else "Bot"
-        conversation += f"{role}: {msg.content}\n"
+        conversation += f"{msg.content}\n"
 
     prompt = f"""
-You are a friendly oral health chatbot. Use your own knowledge and the context from previous documents to answer questions. Always respond in a helpful, clear, and friendly manner.
+You are a friendly oral health chatbot. Your goal is to help users solve oral health issues. 
+
+- Before giving any solution, always ask 1–2 clarifying questions to understand the user's situation fully.
+- Use information from past conversation messages and relevant documents to guide your questions.
+- Once you have enough information, provide a clear and practical solution.
+- Always respond in a helpful, empathetic, and friendly manner.
+
 
 Conversation so far:
 {conversation}
