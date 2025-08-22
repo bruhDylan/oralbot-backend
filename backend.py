@@ -7,6 +7,7 @@ from supabase.client import Client, create_client
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores import SupabaseVectorStore
 from langchain_core.messages import HumanMessage, AIMessage
+from fastapi.middleware.cors import CORSMiddleware
 
 # ------------------------
 # 1. Load environment
@@ -40,6 +41,20 @@ llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 # 5. FastAPI app
 # ------------------------
 app = FastAPI(title="Oral Health RAG Chatbot Backend")
+
+# Allow your frontend origin
+origins = [
+    "http://localhost:5500",  # if testing locally
+    "https://huggingface.co/spaces/Dylan4353847/chompbot"  # replace with your deployed frontend URL
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # or ["*"] to allow all
+    allow_credentials=True,
+    allow_methods=["*"],    # allow GET, POST, OPTIONS, etc.
+    allow_headers=["*"],
+)
 
 # ------------------------
 # 6. In-memory conversation storage
